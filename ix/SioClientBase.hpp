@@ -93,7 +93,7 @@ public:
             localtime_r(&tt, &tm);
         #endif
 
-            auto ms = duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000;
+            // auto ms = duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000;
 
             static std::atomic<uint64_t> s_counter{0};
             uint64_t id = s_counter.fetch_add(1, std::memory_order_relaxed);
