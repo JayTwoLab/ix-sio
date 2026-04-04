@@ -11,36 +11,36 @@
 #include <iomanip>
 
 #ifdef _WIN32
-  #include <winsock2.h>
-  #include <ws2tcpip.h>
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+
+    // Windows requires WSAStartup before using sockets, and WSACleanup on shutdown. This helper struct ensures that happens.
+    struct WinSockInit {
+        WinSockInit() {
+            WSADATA wsaData;
+            int r = WSAStartup(MAKEWORD(2, 2), &wsaData);
+            if (r != 0) {
+                throw std::runtime_error("WSAStartup failed: " + std::to_string(r));
+            }
+        }
+        ~WinSockInit() { WSACleanup(); }
+    };
 #endif
 
+// logging with spdlog
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <ixwebsocket/IXWebSocket.h>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.hpp> // json parsing for event data and payloads
 
 #include <curl/curl.h> // used by V2 polling handshake
+
+#include <ixwebsocket/IXWebSocket.h> // socket.io client uses ixwebsocket for websocket communication
 
 // Include refactored headers
 #include "SioClientBase.hpp"
 #include "SioClientV2.hpp"
 #include "SioClientV4.hpp"
-
-#ifdef _WIN32
-// Windows requires WSAStartup before using sockets, and WSACleanup on shutdown. This helper struct ensures that happens.
-struct WinSockInit {
-    WinSockInit() {
-        WSADATA wsaData;
-        int r = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (r != 0) {
-            throw std::runtime_error("WSAStartup failed: " + std::to_string(r));
-        }
-    }
-    ~WinSockInit() { WSACleanup(); }
-};
-#endif
 
 // Socket.IO v3/v4 example with direct websocket connection (no polling handshake)
 static void runV4Example()
@@ -192,35 +192,44 @@ int main() {
 
     // initialize logging
     auto console = spdlog::stdout_color_mt("console");
-
     spdlog::set_level(spdlog::level::trace);
-
     // console->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
     // console->set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
     spdlog::set_default_logger(console);
 
+#ifdef _WIN32
+    WinSockInit wsi;
+#endif
+
+    // libcurl init for SioClientV2
+    if (curl_global_init(CURL_GLOBAL_DEFAULT) == CURLE_OK) {
+        spdlog::info("[Main] libcurl global initialization succeeded");
+    }
+    else {
+        spdlog::error("[Main][Error] libcurl global initialization failed");
+        return 1;
+    }
+
+    int ret = 0;
+
     try {
-        // libcurl init for SioClientV2
-        curl_global_init(CURL_GLOBAL_DEFAULT);
-
-    #ifdef _WIN32
-        WinSockInit wsi;
-    #endif
-
         // Run examples separately
-        runV4Example();
+
+		runV4Example(); // socket.io v3/v4 example with direct websocket connection
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
         spdlog::info("==============================================");
-        runV2Example();
+
+		runV2Example(); // socket.io v2 example with polling handshake
 
         // brief observe period
         std::this_thread::sleep_for(std::chrono::seconds(2));
-
-        curl_global_cleanup();
-        return 0;
+        ret = 0;
     } catch (const std::exception& ex) {
         spdlog::critical("[Fatal] {}", ex.what());
-        curl_global_cleanup();
-        return 1;
+        ret = 1; // failed
     }
+
+    curl_global_cleanup();
+    return ret; 
 }
