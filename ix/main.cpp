@@ -47,35 +47,35 @@ static void runV4Example()
 {
     spdlog::info("[Example] Starting Socket.IO v3/v4 example");
 
-    SioClientV4 client("sio4   "); // socket.io v3/v4 클라이언트
+    SioClientV4 client("sio4   "); // Socket.IO v3/v4 client
 
     // client.getLogger()->set_level(spdlog::level::trace);
     client.getLogger()->set_level(spdlog::level::info);
 
-    std::atomic<bool> disconnected(false); // 서버로부터 연결이 끊어졌는지 여부를 추적하는 원자 플래그
+    std::atomic<bool> disconnected(false); // Atomic flag tracking whether disconnected from the server
 
-    // 송신 시 로그를 찍는 emit 핸들러 등록 
+    // Register emit handler that logs on send
     client.onEmit([&client](const std::string& event, const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] Emitting {} -> {}", event, data.dump());
         }
     });
 
-    // 연결이 끊어졌을 때 핸들러 등록
+    // Register handler for disconnect
     client.onDisconnect([&client, &disconnected]() {
         if (auto lg = client.getLogger()) {
             lg->info("[App] Disconnected, scheduling cleanup");
-        }
-    });
+        } 
+    }); 
 
-    // "server-info" 이벤트 수신 시 로그를 찍는 핸들러 등록
+    // Register handler to log when "server-info" event is received
     client.on("server-info", [&client](const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] message received: {}", data.dump());
         }
     });
 
-    // 모든 이벤트 수신 시 로그를 찍는 핸들러 등록
+    // Register handler to log any received event
     client.onAny([&client](const std::string& event, const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] any event: {} -> {}", event, data.dump());
@@ -89,28 +89,28 @@ static void runV4Example()
         return;
     }
 
-    // 초기 연결 대기
-    if (!SioClientBase::waitForConnect(client, 10000)) { // 10초 대기
+    // Wait for initial connection
+    if (!SioClientBase::waitForConnect(client, 10000)) { // wait 10 seconds
         spdlog::error("[Example][Error] V4 client did not connect within timeout");
         return;
     }
 
-    // 작업 루프
+    // Work loop
     for (int i = 0; i < 3; ++i) {
 
-        // 작업 시작 전 최종 연결 상태 확인
+        // Check final connection state before starting work
         if (disconnected.load(std::memory_order_relaxed) || !client.isConnected()) {
             spdlog::info("[Example] Aborting send loop due to disconnect");
             return;
         }
 
-        // 정상 연결 상태면 전송
+        // If connected, send
         client.emit("message", nlohmann::json({{"user", "cpp_client_v4"}, {"text", "Hello from v4 client!"}}));
 
         std::this_thread::sleep_for(std::chrono::seconds(3));
     }
 
-    client.stop(); // 소켓 닫기
+    client.stop(); // close socket
     spdlog::info("[Example] Socket.IO v3/v4 example finished");
 }
 
@@ -119,35 +119,35 @@ static void runV2Example()
 {
     spdlog::info("[Example] Starting Socket.IO v2 example");
 
-    SioClientV2 client("sio2   "); // socket.io v2 클라이언트 
+    SioClientV2 client("sio2   "); // Socket.IO v2 client 
 
     // client.getLogger()->set_level(spdlog::level::trace);
     client.getLogger()->set_level(spdlog::level::info);
 
-    std::atomic<bool> disconnected{ false }; // 서버로부터 연결이 끊어졌는지 여부를 추적하는 원자 플래그
+    std::atomic<bool> disconnected{ false }; // Atomic flag tracking whether disconnected from the server
 
-    // 송신 시 로그를 찍는 emit 핸들러 등록
+    // Register emit handler that logs on send
     client.onEmit([&client](const std::string& event, const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] Emitting {} -> {}", event, data.dump());
         }
     });
 
-    // 연결이 끊어졌을 때 핸들러 등록
+    // Register handler for disconnect
     client.onDisconnect([&client, &disconnected](){
         if (auto lg = client.getLogger()) {
             lg->info("[App] Disconnected, cleaning up");
         }
     });
 
-    // "chat message" 이벤트 수신 시 로그를 찍는 핸들러 등록
+    // Register handler to log when "chat message" event is received
     client.on("chat message", [&client](const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] chat message received: {}", data.dump());
         }
     });
 
-    // 모든 이벤트 수신 시 로그를 찍는 핸들러 등록
+    // Register handler to log any received event
     client.onAny([&client](const std::string& event, const nlohmann::json& data){
         if (auto lg = client.getLogger()) {
             lg->info("[App] any event: {} -> {}", event, data.dump());
@@ -161,22 +161,22 @@ static void runV2Example()
         return;
     }
 
-    // 초기 연결 대기 (10초)
+    // Wait for initial connection (10s)
     if (!SioClientBase::waitForConnect(client, 10000)) {
         spdlog::error("[Example][Error] V2 client did not connect within timeout");
         return; 
     }  
 
-    // 작업 루프
+    // Work loop
     for (int i = 0; i < 3; ++i) {
 
-        // 작업 시작 전 최종 연결 상태 확인
+        // Check final connection state before starting work
         if (disconnected.load(std::memory_order_relaxed) || !client.isConnected()) {
             spdlog::info("[Example] Aborting send loop due to disconnect");
             return; 
         }
 
-        // 정상 연결 상태면 서버로 메시지 전송
+        // If connected, send message to server
         client.emit("chat message", nlohmann::json({{"user", "cpp_client_v2"}, {"text", "Hello from v2 client!"}}));
 
         std::this_thread::sleep_for(std::chrono::seconds(3));
@@ -184,7 +184,7 @@ static void runV2Example()
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    client.stop(); // 소켓 닫기
+    client.stop(); // close socket
     spdlog::info("[Example] Socket.IO v2 example finished");
 }
 

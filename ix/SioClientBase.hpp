@@ -119,7 +119,7 @@ public:
             }
         }
     }
-
+     
     virtual ~SioClientBase() {}
 
     // Allow caller to inject a specific logger instance

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SioClientBase.hpp"
-
+ 
 class SioClientV4 : public SioClientBase {
 private:
     void setupCallbacks() override {

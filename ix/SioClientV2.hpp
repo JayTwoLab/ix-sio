@@ -241,7 +241,7 @@ public:
         setUrlProvider([this](const std::string& host, int port, const std::string& path) -> std::string {
             std::string sid = pollingHandshakeGetSid(host, port, path);
             if (_logger) _logger->trace("[Debug] V2 polling handshake sid={}", sid);
-
+             
             std::string url = "ws://" + host + ":" + std::to_string(port);
             if (path == "/") url += "/";
             else url += path;

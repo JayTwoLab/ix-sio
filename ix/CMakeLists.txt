@@ -41,11 +41,25 @@ target_link_libraries(socketio_client PRIVATE
 if(WIN32)
   # required for Winsock and BCryptGenRandom used by mbedtls (mbedcrypto)
   target_link_libraries(socketio_client PRIVATE ws2_32 bcrypt)
+  # ws2_32 is winsock, required for Windows socket programming
+  # bcrypt is required for mbedtls's random number generation on Windows
 endif()
 
 # Optional: enable warnings
 if(MSVC)
+  # Use /W4 for maximum warnings and /permissive- to disable non-standard extensions
+  # This ensures that we get the most out of the compiler's warning system while maintaining compatibility with standard C++.
   target_compile_options(socketio_client PRIVATE /W4 /permissive-)
+  foreach(var
+    CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+    CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS_MINSIZEREL
+    CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+    CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_CXX_FLAGS_MINSIZEREL)
+    if(DEFINED ${var})
+      string(REGEX REPLACE "/W[0-4]" "/W4" _newflags "${${var}}")
+      set(${var} "${_newflags}")
+    endif()
+  endforeach()
 else()
   target_compile_options(socketio_client PRIVATE -Wall -Wextra -Wpedantic)
 endif()
