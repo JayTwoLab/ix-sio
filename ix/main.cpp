@@ -14,16 +14,15 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <nlohmann/json.hpp> // json parsing for event data and payloads
+// json parsing for event data and payloads
+#include <nlohmann/json.hpp> 
 
-#include <curl/curl.h> // used by V2 polling handshake
-
-#include <ixwebsocket/IXWebSocket.h> // socket.io client uses ixwebsocket for websocket communication
+#include <curl/curl.h> // libcurl 
+#include "CurlGlobal.hpp" // RAII wrapper for curl_global_init and curl_global_cleanup
 
 // Include refactored headers
-#include "SioClientBase.hpp"
-#include "SioClientV2.hpp"
-#include "SioClientV4.hpp"
+#include "SioClientV2.hpp" // socket.io v2 client with polling handshake
+#include "SioClientV4.hpp" // socket.io v3/v4 client with direct websocket connection
 
 // Socket.IO v3/v4 example with direct websocket connection (no polling handshake)
 static void runV4Example()
@@ -184,19 +183,17 @@ int main() {
     WinSockInit wsi;
 #endif
 
-    // libcurl init for SioClientV2
-    if (curl_global_init(CURL_GLOBAL_DEFAULT) == CURLE_OK) {
-        spdlog::info("[Main] libcurl global initialization succeeded");
+    std::unique_ptr<CurlGlobal> curlInit;
+    try {
+        curlInit = std::make_unique<CurlGlobal>();
+		// CurlGlobal will automatically clean up when going out of scope at the end of main
     }
-    else {
-        spdlog::error("[Main][Error] libcurl global initialization failed");
+    catch (const std::exception& ex) {
+        spdlog::critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
         return 1;
     }
 
-    int ret = 0;
-
-    try {
-        // Run examples separately
+    try { // Run examples separately
 
 		runV4Example(); // socket.io v3/v4 example with direct websocket connection
 
@@ -204,15 +201,12 @@ int main() {
         spdlog::info("==============================================");
 
 		runV2Example(); // socket.io v2 example with polling handshake
-
-        // brief observe period
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        ret = 0;
+        
+        std::this_thread::sleep_for(std::chrono::seconds(2)); // brief observe period
     } catch (const std::exception& ex) {
         spdlog::critical("[Fatal] {}", ex.what());
-        ret = 1; // failed
+        return 2; 
     }
 
-    curl_global_cleanup();
-    return ret; 
+    return 0; 
 }

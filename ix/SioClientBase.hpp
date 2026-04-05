@@ -12,12 +12,13 @@
 #include <iomanip>
 #include <atomic>
 
+// logging with spdlog
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <ixwebsocket/IXWebSocket.h>
-#include <nlohmann/json.hpp>
+#include <ixwebsocket/IXWebSocket.h> // socket.io client uses ixwebsocket for websocket communication
 
+#include <nlohmann/json.hpp> // json parsing for event data and payloads
 
 #ifdef _WIN32
     #include <winsock2.h>
