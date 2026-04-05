@@ -180,15 +180,16 @@ int main() {
     spdlog::set_default_logger(console);
 
 #ifdef _WIN32
+	// Ensure WinSock is initialized before any socket operations 
+    // (including those in WebSocket++ or libcurl)
     WinSockInit wsi;
 #endif
 
-    std::unique_ptr<CurlGlobal> curlInit;
+    std::unique_ptr<CurlGlobal> curlInit = nullptr;
     try {
         curlInit = std::make_unique<CurlGlobal>();
 		// CurlGlobal will automatically clean up when going out of scope at the end of main
-    }
-    catch (const std::exception& ex) {
+    } catch (const std::exception& ex) {
         spdlog::critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
         return 1;
     }
