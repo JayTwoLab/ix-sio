@@ -25,9 +25,9 @@
 #include "SioClientV4.hpp" // socket.io v3/v4 client with direct websocket connection
 
 // Socket.IO v3/v4 example with direct websocket connection (no polling handshake)
-static void runV4Example()
+static void runV4Example(std::shared_ptr<spdlog::logger> console)
 {
-    spdlog::info("[Example] Starting Socket.IO v3/v4 example");
+    console->info("[Example] Starting Socket.IO v3/v4 example");
 
     SioClientV4 client("sio4   "); // Socket.IO v3/v4 client
 
@@ -67,13 +67,13 @@ static void runV4Example()
     try {
         client.connect("127.0.0.1", 3004, "/socket.io/");
     } catch (const std::exception &ex) {
-        spdlog::error("[Example][Error] V4 connect failed: {}", ex.what());
+        console->error("[Example][Error] V4 connect failed: {}", ex.what());
         return;
     }
 
     // Wait for initial connection
     if (!SioClientBase::waitForConnect(client, 10000)) { // wait 10 seconds
-        spdlog::error("[Example][Error] V4 client did not connect within timeout");
+        console->error("[Example][Error] V4 client did not connect within timeout");
         return;
     }
 
@@ -82,7 +82,7 @@ static void runV4Example()
 
         // Check final connection state before starting work
         if (disconnected.load(std::memory_order_relaxed) || !client.isConnected()) {
-            spdlog::info("[Example] Aborting send loop due to disconnect");
+            console->info("[Example] Aborting send loop due to disconnect");
             return;
         }
 
@@ -93,13 +93,13 @@ static void runV4Example()
     }
 
     client.stop(); // close socket
-    spdlog::info("[Example] Socket.IO v3/v4 example finished");
+    console->info("[Example] Socket.IO v3/v4 example finished");
 }
 
 // Socket.IO v2 example with polling handshake to obtain sid, then websocket upgrade
-static void runV2Example()
+static void runV2Example(std::shared_ptr<spdlog::logger> console)
 {
-    spdlog::info("[Example] Starting Socket.IO v2 example");
+    console->info("[Example] Starting Socket.IO v2 example");
 
     SioClientV2 client("sio2   "); // Socket.IO v2 client 
 
@@ -139,13 +139,13 @@ static void runV2Example()
     try {
         client.connect("127.0.0.1", 3002, "/socket.io/");
     } catch (const std::exception &ex) {
-        spdlog::error("[Example][Error] V2 connect failed: {}", ex.what());
+        console->error("[Example][Error] V2 connect failed: {}", ex.what());
         return;
     }
 
     // Wait for initial connection (10s)
     if (!SioClientBase::waitForConnect(client, 10000)) {
-        spdlog::error("[Example][Error] V2 client did not connect within timeout");
+        console->error("[Example][Error] V2 client did not connect within timeout");
         return; 
     }  
 
@@ -154,7 +154,7 @@ static void runV2Example()
 
         // Check final connection state before starting work
         if (disconnected.load(std::memory_order_relaxed) || !client.isConnected()) {
-            spdlog::info("[Example] Aborting send loop due to disconnect");
+            console->info("[Example] Aborting send loop due to disconnect");
             return; 
         }
 
@@ -167,7 +167,7 @@ static void runV2Example()
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     client.stop(); // close socket
-    spdlog::info("[Example] Socket.IO v2 example finished");
+    console->info("[Example] Socket.IO v2 example finished");
 }
 
 int main() {
@@ -190,22 +190,22 @@ int main() {
         curlInit = std::make_unique<CurlGlobal>();
 		// CurlGlobal will automatically clean up when going out of scope at the end of main
     } catch (const std::exception& ex) {
-        spdlog::critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
+        console->critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
         return 1;
     }
 
     try { // Run examples separately
 
-		runV4Example(); // socket.io v3/v4 example with direct websocket connection
+		runV4Example(console); // socket.io v3/v4 example with direct websocket connection
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        spdlog::info("==============================================");
+        console->info("==============================================");
 
-		runV2Example(); // socket.io v2 example with polling handshake
+		runV2Example(console); // socket.io v2 example with polling handshake
         
         std::this_thread::sleep_for(std::chrono::seconds(2)); // brief observe period
     } catch (const std::exception& ex) {
-        spdlog::critical("[Fatal] {}", ex.what());
+        console->critical("[Fatal] {}", ex.what());
         return 2; 
     }
 
