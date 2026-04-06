@@ -1,3 +1,5 @@
+// main.cpp - example usage of Socket.IO v2 and v3/v4 clients
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -174,21 +176,29 @@ int main() {
 
     // initialize logging
     auto console = spdlog::stdout_color_mt("console");
+    if (console == nullptr) {
+        std::cerr << "[Fatal] Failed to create console logger" << std::endl;
+        return 1;
+	}
     spdlog::set_level(spdlog::level::trace);
     // console->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
     // console->set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
     spdlog::set_default_logger(console);
 
 #ifdef _WIN32
-	// Ensure WinSock is initialized before any socket operations 
-    // (including those in WebSocket++ or libcurl)
-    WinSockInit wsi;
+    // Ensure WinSock is initialized before any socket operations 
+    try {
+        WinSockInit wsi;
+    } catch (const std::exception& ex) {
+        console->critical("[Fatal] WinSock initialization failed: {}", ex.what());
+        return 1;
+	}
 #endif
 
     std::unique_ptr<CurlGlobal> curlInit = nullptr;
     try {
         curlInit = std::make_unique<CurlGlobal>();
-		// CurlGlobal will automatically clean up when going out of scope at the end of main
+        // CurlGlobal will automatically clean up when going out of scope at the end of main
     } catch (const std::exception& ex) {
         console->critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
         return 1;
@@ -196,12 +206,12 @@ int main() {
 
     try { // Run examples separately
 
-		runV4Example(console); // socket.io v3/v4 example with direct websocket connection
+        runV4Example(console); // socket.io v3/v4 example with direct websocket connection
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
         console->info("==============================================");
 
-		runV2Example(console); // socket.io v2 example with polling handshake
+        runV2Example(console); // socket.io v2 example with polling handshake
         
         std::this_thread::sleep_for(std::chrono::seconds(2)); // brief observe period
     } catch (const std::exception& ex) {
