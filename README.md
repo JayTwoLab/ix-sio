@@ -1,7 +1,8 @@
 # ix-sio
 
-- `ix-sio` 프로젝트는 `C++` 기반의 `socket.io` `client`와 
-- `Node.js` 기반의 `socket.io` `server` 예제들을 포함한 저장소입니다.
+- `C++` 기반의 `socket.io` `client`
+   - `IXWebSocket` 기반의 Socket.IO 클라이언트 구현체 제공
+- `Node.js` 기반의 `socket.io` `server` 예제
 
 ## 폴더 구조
 
@@ -13,8 +14,8 @@
 - `sio2/` : Node.js 기반 Socket.IO v2 서버 예제
     - `server2.js` : Socket.IO v2 서버 코드
     - `package.json` : 의존성 및 실행 스크립트
-- `sio3/` : Node.js 기반 Socket.IO v3 서버 예제
-    - `server3.js` : Socket.IO v3 서버 코드
+- `sio3/` : Node.js 기반 Socket.IO v3/v4 서버 예제
+    - `server3.js` : Socket.IO v3/v4 서버 코드
     - `package.json` : 의존성 및 실행 스크립트
 
 ## 주요 특징
@@ -25,24 +26,24 @@
 
 ## 빌드 및 실행 방법
 
-### C++ 클라이언트 (ix)
+### `C++` 클라이언트 (`ix`)
 
-1. CMake를 이용해 빌드
+- (1) CMake를 이용해 빌드
    ```sh
-   cd ix
-   cmake -B build
-   cmake --build build
+     cd ix
+     cmake -B build
+     cmake --build build
    ```
-2. 실행 파일을 통해 클라이언트 실행
+- (2) 실행 파일을 통해 클라이언트 실행
 
-### Node.js 서버 (sio2, sio3)
+### `Node.js` 서버 (`sio2`, `sio3`)
 
-1. 각 폴더(`sio2`, `sio3`)에서 의존성 설치
+- (1) 각 폴더(`sio2`, `sio3`)에서 의존성 설치
    ```sh
-   npm install
+     npm install
    ```
-2. 서버 실행
+- (2) 서버 실행
    ```sh
-   node server2.js   # 또는 node server3.js
+     node server2.js  # 또는 node server3.js
    ```
 
