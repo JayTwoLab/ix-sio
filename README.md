@@ -1,7 +1,7 @@
 # ix-sio
 
-- ix-sio 프로젝트는 C++ 기반의 Socket.IO 클라이언트와 
-- Node.js 기반의 Socket.IO 서버 예제들을 포함한 저장소입니다.
+- `ix-sio` 프로젝트는 `C++` 기반의 `socket.io` `client`와 
+- `Node.js` 기반의 `socket.io` `server` 예제들을 포함한 저장소입니다.
 
 ## 폴더 구조
 
