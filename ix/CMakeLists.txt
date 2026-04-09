@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.26)
 
 project(socketio_client_example LANGUAGES CXX)
 
+set(EXE_NAME "socketio_client")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -17,21 +19,9 @@ find_package(spdlog REQUIRED) # spdlog https://githunb.com/gabime/spdlog
 find_package(nlohmann_json REQUIRED) # nlohmann json https://github.com/nlohmann/json
 find_package(ixwebsocket REQUIRED) # ixwebsocket https://github.com/machinezone/IXWebSocket
 
-#find_package(ixwebsocket QUIET)
-# Try to find ixwebsocket; if not available, fetch it
-# if(NOT ixwebsocket_FOUND)
-#   include(FetchContent)
-#   FetchContent_Declare(
-#     ixwebsocket
-#     GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
-#     GIT_TAG v11.2.0
-#   )
-#   FetchContent_MakeAvailable(ixwebsocket)
-# endif()
+add_executable(${EXE_NAME} main.cpp)
 
-add_executable(socketio_client main.cpp)
-
-target_link_libraries(socketio_client PRIVATE
+target_link_libraries(${EXE_NAME} PRIVATE
   spdlog::spdlog
   nlohmann_json::nlohmann_json
   CURL::libcurl
@@ -41,7 +31,7 @@ target_link_libraries(socketio_client PRIVATE
 
 if(WIN32)
   # required for Winsock and BCryptGenRandom used by mbedtls (mbedcrypto)
-  target_link_libraries(socketio_client PRIVATE ws2_32 bcrypt)
+  target_link_libraries(${EXE_NAME} PRIVATE ws2_32 bcrypt)
   # ws2_32 is winsock, required for Windows socket programming
   # bcrypt is required for mbedtls's random number generation on Windows
 endif()
@@ -50,7 +40,7 @@ endif()
 if(MSVC)
   # Use /W4 for maximum warnings and /permissive- to disable non-standard extensions
   # This ensures that we get the most out of the compiler's warning system while maintaining compatibility with standard C++.
-  target_compile_options(socketio_client PRIVATE /W4 /permissive-)
+  target_compile_options(${EXE_NAME} PRIVATE /W4 /permissive-)
   foreach(var
     CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
     CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS_MINSIZEREL
@@ -62,5 +52,5 @@ if(MSVC)
     endif()
   endforeach()
 else()
-  target_compile_options(socketio_client PRIVATE -Wall -Wextra -Wpedantic)
+  target_compile_options(${EXE_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 endif()

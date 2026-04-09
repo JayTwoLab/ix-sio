@@ -20,8 +20,6 @@
 
 #include <nlohmann/json.hpp> // json parsing for event data and payloads
 
-#include "WinSockInit.hpp" // winsock initialization on Windows
-
 // Base client with common logic
 class SioClientBase {
 public:
