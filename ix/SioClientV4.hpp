@@ -2,6 +2,8 @@
 
 #include "SioClientBase.hpp"
  
+namespace j2::network {
+
 class SioClientV4 : public SioClientBase {
 private:
     void setupCallbacks() override {
@@ -88,3 +90,5 @@ public:
     }
     virtual ~SioClientV4() {}
 };
+
+} // namespace j2::network

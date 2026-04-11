@@ -21,6 +21,8 @@
 #include <nlohmann/json.hpp> // json parsing for event data and payloads
 
 // Base client with common logic
+namespace j2::network {
+
 class SioClientBase {
 public:
     using UrlProvider = std::function<std::string(const std::string& host, int port, const std::string& path)>;
@@ -215,3 +217,5 @@ public:
         return client.isConnected();
     }
 };
+
+} // namespace j2::network

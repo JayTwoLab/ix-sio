@@ -47,7 +47,7 @@ int main() {
 #ifdef _WIN32
     // Ensure WinSock is initialized before any socket operations 
     try {
-        WinSockInit wsi;
+        j2::network::WinSockInit wsi;
     } catch (const std::exception& ex) {
         console->critical("[Fatal] WinSock initialization failed: {}", ex.what());
         return 1;
@@ -55,9 +55,9 @@ int main() {
 #endif
 
 	// Initialize libcurl globally; RAII wrapper ensures cleanup on exit
-    std::unique_ptr<CurlGlobal> curlInit = nullptr;
+    std::unique_ptr<j2::network::CurlGlobal> curlInit = nullptr;
     try {
-        curlInit = std::make_unique<CurlGlobal>();
+        curlInit = std::make_unique<j2::network::CurlGlobal>();
         // CurlGlobal will automatically clean up when going out of scope at the end of main
     } catch (const std::exception& ex) {
         console->critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
@@ -87,7 +87,7 @@ void runV4Example(std::shared_ptr<spdlog::logger> console)
 {
     console->info("[Example] Starting Socket.IO v3/v4 example");
 
-    SioClientV4 client("sio4   "); // Socket.IO v3/v4 client
+    j2::network::SioClientV4 client("sio4   "); // Socket.IO v3/v4 client
 
     // client.getLogger()->set_level(spdlog::level::trace);
     client.getLogger()->set_level(spdlog::level::info);
@@ -131,7 +131,7 @@ void runV4Example(std::shared_ptr<spdlog::logger> console)
     }
 
     // Wait for initial connection
-    if (!SioClientBase::waitForConnect(client, 10000)) { // wait 10 seconds
+    if (!j2::network::SioClientBase::waitForConnect(client, 10000)) { // wait 10 seconds
         console->error("[Example][Error] V4 client did not connect within timeout");
         return;
     }
@@ -160,7 +160,7 @@ void runV2Example(std::shared_ptr<spdlog::logger> console)
 {
     console->info("[Example] Starting Socket.IO v2 example");
 
-    SioClientV2 client("sio2   "); // Socket.IO v2 client 
+    j2::network::SioClientV2 client("sio2   "); // Socket.IO v2 client 
 
     // client.getLogger()->set_level(spdlog::level::trace);
     client.getLogger()->set_level(spdlog::level::info);
@@ -204,7 +204,7 @@ void runV2Example(std::shared_ptr<spdlog::logger> console)
     }
 
     // Wait for initial connection (10s)
-    if (!SioClientBase::waitForConnect(client, 10000)) {
+    if (!j2::network::SioClientBase::waitForConnect(client, 10000)) {
         console->error("[Example][Error] V2 client did not connect within timeout");
         return;
     }

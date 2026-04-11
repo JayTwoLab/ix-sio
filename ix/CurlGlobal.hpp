@@ -4,21 +4,23 @@
 
 #include <atomic>
 #include <stdexcept>
- 
+
 // CurlGlobal : RAII wrapper for curl_global_init and curl_global_cleanup
-// 
+//
 // Example usage:
-//   std::unique_ptr<CurlGlobal> curlInit = nullptr;
+//   std::unique_ptr<j2::network::CurlGlobal> curlInit = nullptr;
 //   try {
-//      curlInit = std::make_unique<CurlGlobal>();
+//      curlInit = std::make_unique<j2::network::CurlGlobal>();
 //      // CurlGlobal will automatically clean up when going out of scope at the end of main
 //   } catch (const std::exception& ex) {
 //      console->critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
 //      return 1;
 //   }
-// 
+//
 // Note: CurlGlobal is non-copyable and non-movable to make ownership explicit.
 // CurlGlobal maintains a static atomic reference count to allow multiple instances to be created safely; the first instance will perform initialization and the last instance will perform cleanup.
+namespace j2::network {
+
 struct CurlGlobal {
     CurlGlobal() {
         // Increment ref count; if transitioning 0->1, perform init.
@@ -27,7 +29,7 @@ struct CurlGlobal {
                 // revert ref count and report error
                 ref_.fetch_sub(1, std::memory_order_acq_rel);
                 throw std::runtime_error("curl_global_init failed");
-            } 
+            }
         }
     }
 
@@ -47,3 +49,5 @@ struct CurlGlobal {
 private:
     inline static std::atomic<int> ref_{0};
 };
+
+} // namespace j2::network

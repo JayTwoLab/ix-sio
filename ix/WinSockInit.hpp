@@ -3,9 +3,14 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <stdexcept>
+#include <string>
 
 // Windows requires WSAStartup before using sockets, and WSACleanup on shutdown. 
 // This helper struct ensures that happens.
+namespace j2 {
+namespace network {
+
 struct WinSockInit {
     WinSockInit() {
         WSADATA wsaData;
@@ -19,5 +24,8 @@ struct WinSockInit {
         WSACleanup(); 
     }
 };
+
+} // namespace network
+} // namespace j2
 
 #endif

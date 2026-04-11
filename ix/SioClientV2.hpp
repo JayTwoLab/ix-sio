@@ -5,6 +5,8 @@
 #include <curl/curl.h> // used by V2 polling handshake
 #include <utility>
 
+namespace j2::network {
+
 class SioClientV2 : public SioClientBase {
 private:
     bool _awaitingProbe = false;
@@ -241,7 +243,7 @@ public:
         setUrlProvider([this](const std::string& host, int port, const std::string& path) -> std::string {
             std::string sid = pollingHandshakeGetSid(host, port, path);
             if (_logger) _logger->trace("[Debug] V2 polling handshake sid={}", sid);
-             
+              
             std::string url = "ws://" + host + ":" + std::to_string(port);
             if (path == "/") url += "/";
             else url += path;
@@ -251,3 +253,5 @@ public:
     }
     virtual ~SioClientV2() {}
 };
+
+} // namespace j2::network
