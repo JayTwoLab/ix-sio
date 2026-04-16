@@ -1,7 +1,7 @@
 # ix-sio
 
-- `C++` 기반의 `socket.io` `client`
-   - `IXWebSocket` 기반의 Socket.IO 클라이언트 구현체 제공
+- `C++` 기반의 [`socket.io`](https://socket.io/) `client`
+   - [`IXWebSocket`](https://github.com/machinezone/IXWebSocket) 기반의 `Socket.IO` 클라이언트 구현체 제공
 - `Node.js` 기반의 `socket.io` `server` 예제
 
 ## 폴더 구조
