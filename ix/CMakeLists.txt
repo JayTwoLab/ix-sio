@@ -22,11 +22,11 @@ find_package(ixwebsocket REQUIRED) # ixwebsocket https://github.com/machinezone/
 add_executable(${EXE_NAME} main.cpp)
 
 target_link_libraries(${EXE_NAME} PRIVATE
-  spdlog::spdlog
-  nlohmann_json::nlohmann_json
-  CURL::libcurl
-  Threads::Threads
-  ixwebsocket::ixwebsocket
+    Threads::Threads
+    CURL::libcurl
+    spdlog::spdlog
+    nlohmann_json::nlohmann_json
+    ixwebsocket::ixwebsocket
 )
 
 if(WIN32)

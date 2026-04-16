@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdexcept>
@@ -8,9 +9,20 @@
 
 // Windows requires WSAStartup before using sockets, and WSACleanup on shutdown. 
 // This helper struct ensures that happens.
-namespace j2 {
-namespace network {
+namespace j2::network {
 
+// WinSockInit : RAII wrapper for WSAStartup and WSACleanup
+//
+// Example usage:
+// #ifdef _WIN32
+//     try {
+//         j2::network::WinSockInit wsi;
+//     } catch (const std::exception& ex) {
+//         std::cerr << "[Fatal] WinSock initialization failed: " << ex.what() << std::endl;
+//         return 1;
+//     }
+// #endif
+// 
 struct WinSockInit {
     WinSockInit() {
         WSADATA wsaData;
@@ -26,6 +38,5 @@ struct WinSockInit {
 };
 
 } // namespace network
-} // namespace j2
 
-#endif
+#endif // _WIN32

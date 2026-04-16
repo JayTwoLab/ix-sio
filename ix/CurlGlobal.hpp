@@ -1,9 +1,9 @@
 #pragma once
 
-#include <curl/curl.h> // libcurl global init and cleanup functions
-
 #include <atomic>
 #include <stdexcept>
+
+#include <curl/curl.h> // libcurl global init and cleanup functions
 
 // CurlGlobal : RAII wrapper for curl_global_init and curl_global_cleanup
 //
@@ -11,7 +11,6 @@
 //   std::unique_ptr<j2::network::CurlGlobal> curlInit = nullptr;
 //   try {
 //      curlInit = std::make_unique<j2::network::CurlGlobal>();
-//      // CurlGlobal will automatically clean up when going out of scope at the end of main
 //   } catch (const std::exception& ex) {
 //      console->critical("[Fatal] CurlGlobal initialization failed: {}", ex.what());
 //      return 1;

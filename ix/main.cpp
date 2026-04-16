@@ -38,7 +38,7 @@ int main() {
     if (console == nullptr) {
         std::cerr << "[Fatal] Failed to create console logger" << std::endl;
         return 1;
-	}
+    }
     spdlog::set_level(spdlog::level::trace);
     // console->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
     // console->set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
@@ -51,10 +51,10 @@ int main() {
     } catch (const std::exception& ex) {
         console->critical("[Fatal] WinSock initialization failed: {}", ex.what());
         return 1;
-	}
+    }
 #endif
 
-	// Initialize libcurl globally; RAII wrapper ensures cleanup on exit
+    // Initialize libcurl globally; RAII wrapper ensures cleanup on exit
     std::unique_ptr<j2::network::CurlGlobal> curlInit = nullptr;
     try {
         curlInit = std::make_unique<j2::network::CurlGlobal>();
