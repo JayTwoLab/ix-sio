@@ -7,15 +7,15 @@
 ## 폴더 구조
 
 - [`ix/`](https://github.com/JayTwoLab/ix-sio/tree/main/ix) : C++로 작성된 [`Socket.IO`](https://socket.io/) 클라이언트 구현 및 관련 소스 코드
-    - `main.cpp` : 클라이언트 실행 예제
+    - [`main.cpp`](https://github.com/JayTwoLab/ix-sio/blob/main/ix/main.cpp) : 클라이언트 실행 예제
     - `SioClientBase.hpp`, `SioClientV2.hpp`, `SioClientV4.hpp` : Socket.IO 클라이언트 구현체
     - `CurlGlobal.hpp`, `WinSockInit.hpp` : 네트워크 초기화 관련 유틸리티
     - `CMakeLists.txt`, `CMakePresets.json` : CMake 빌드 설정 파일
 - [`sio2/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio2) : [Node.js](https://nodejs.org) 기반 [`Socket.IO`](https://socket.io/) v2 서버 예제
-    - `server2.js` : [`Socket.IO`](https://socket.io/) v2 서버 코드
+    - [`server2.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio2/server2.js) : [`Socket.IO`](https://socket.io/) v2 서버 코드
     - `package.json` : 의존성 및 실행 스크립트
 - [`sio3/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio3) : [Node.js](https://nodejs.org) 기반 [`Socket.IO`](https://socket.io/) v3/v4 서버 예제
-    - `server3.js` : [`Socket.IO`](https://socket.io/) v3/v4 서버 코드
+    - [`server3.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio3/server3.js) : [`Socket.IO`](https://socket.io/) v3/v4 서버 코드
     - `package.json` : 의존성 및 실행 스크립트
 
 ## 주요 특징
