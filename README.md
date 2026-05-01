@@ -91,6 +91,8 @@ Rocky Linux 등 일부 RHEL 계열 배포판에는 `ixwebsocket-devel` 패키지
 3. CMake 빌드 시 IXWebSocket이 설치된 경로가 자동으로 탐지되지 않으면, `CMAKE_PREFIX_PATH`에 설치 경로를 추가:
    ```sh
    cmake -B build -DCMAKE_PREFIX_PATH="/usr/local"
+   # 또는
+   cmake -DCMAKE_INSTALL_PREFIX=/your/custom/path ..
    ```
 
 #### 참고
