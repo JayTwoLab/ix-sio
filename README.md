@@ -1,56 +1,58 @@
 # ix-sio
 
-- `C++` 기반의 [`socket.io`](https://socket.io/) `client`
-   - [`IXWebSocket`](https://github.com/machinezone/IXWebSocket) 기반의 [`Socket.IO`](https://socket.io/) 클라이언트 구현체 제공
-- `Node.js` 기반의 `socket.io` `server` 예제
+> [Korean](README.ko.md)
 
-## 폴더 구조
+- `C++` based [`socket.io`](https://socket.io/) `client`
+   - Provides a [`Socket.IO`](https://socket.io/) client implementation based on [`IXWebSocket`](https://github.com/machinezone/IXWebSocket)
+- `Node.js` based `socket.io` `server` examples
 
-- [`ix/`](https://github.com/JayTwoLab/ix-sio/tree/main/ix) : C++로 작성된 [`Socket.IO`](https://socket.io/) 클라이언트 구현 및 관련 소스 코드
-    - [`main.cpp`](https://github.com/JayTwoLab/ix-sio/blob/main/ix/main.cpp) : 클라이언트 실행 예제
-    - `SioClientBase.hpp`, `SioClientV2.hpp`, `SioClientV4.hpp` : Socket.IO 클라이언트 구현체
-    - `CurlGlobal.hpp`, `WinSockInit.hpp` : 네트워크 초기화 관련 유틸리티
-    - `CMakeLists.txt`, `CMakePresets.json` : CMake 빌드 설정 파일
-- [`sio2/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio2) : [Node.js](https://nodejs.org) 기반 [`Socket.IO`](https://socket.io/) v2 서버 예제
-    - [`server2.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio2/server2.js) : [`Socket.IO`](https://socket.io/) v2 서버 코드
-    - `package.json` : 의존성 및 실행 스크립트
-- [`sio3/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio3) : [Node.js](https://nodejs.org) 기반 [`Socket.IO`](https://socket.io/) v3/v4 서버 예제
-    - [`server3.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio3/server3.js) : [`Socket.IO`](https://socket.io/) v3/v4 서버 코드
-    - `package.json` : 의존성 및 실행 스크립트
+## Folder Structure
 
-## 주요 특징
+- [`ix/`](https://github.com/JayTwoLab/ix-sio/tree/main/ix): C++ [`Socket.IO`](https://socket.io/) client implementation and related source code
+    - [`main.cpp`](https://github.com/JayTwoLab/ix-sio/blob/main/ix/main.cpp): Client execution example
+    - `SioClientBase.hpp`, `SioClientV2.hpp`, `SioClientV4.hpp`: Socket.IO client implementations
+    - `CurlGlobal.hpp`, `WinSockInit.hpp`: Network initialization utilities
+    - `CMakeLists.txt`, `CMakePresets.json`: CMake build configuration files
+- [`sio2/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio2): [Node.js](https://nodejs.org) based [`Socket.IO`](https://socket.io/) v2 server example
+    - [`server2.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio2/server2.js): [`Socket.IO`](https://socket.io/) v2 server code
+    - `package.json`: Dependencies and run scripts
+- [`sio3/`](https://github.com/JayTwoLab/ix-sio/tree/main/sio3): [Node.js](https://nodejs.org) based [`Socket.IO`](https://socket.io/) v3/v4 server example
+    - [`server3.js`](https://github.com/JayTwoLab/ix-sio/blob/main/sio3/server3.js): [`Socket.IO`](https://socket.io/) v3/v4 server code
+    - `package.json`: Dependencies and run scripts
 
-- 다양한 버전의 Socket.IO 서버와의 호환성 테스트 가능
-- C++ 클라이언트와 Node.js 서버 예제 코드 제공
-- CMake를 이용한 손쉬운 빌드 환경
+## Key Features
 
-## 빌드 및 실행 방법
+- Compatibility testing with various versions of Socket.IO servers
+- Provides C++ client and Node.js server example code
+- Easy build environment using CMake
 
-### `C++` 클라이언트 (`ix`)
+## Build and Run Instructions
 
-- (1) CMake를 이용해 빌드
+### `C++` Client (`ix`)
+
+- (1) Build using CMake
    ```sh
      cd ix
      cmake -B build
      cmake --build build
    ```
-- (2) 실행 파일을 통해 클라이언트 실행
+- (2) Run the client using the executable
 
-### 의존성 설치 방법 (CURL, spdlog, nlohmann_json, ixwebsocket)
+### Dependency Installation (CURL, spdlog, nlohmann_json, ixwebsocket)
 
 #### Windows (MSVC + vcpkg)
 
-1. [vcpkg](https://vcpkg.io/) 설치 및 환경설정
-2. vcpkg로 패키지 설치:
+1. Install and set up [vcpkg](https://vcpkg.io/)
+2. Install packages with vcpkg:
     ```sh
     vcpkg install curl spdlog nlohmann-json ixwebsocket
     ```
-3. CMake 빌드 시 vcpkg toolchain 파일 지정:
+3. Specify the vcpkg toolchain file when building with CMake:
     ```sh
     cmake -B build -DCMAKE_TOOLCHAIN_FILE="<vcpkg-root>/scripts/buildsystems/vcpkg.cmake"
     cmake --build build
     ```
-    - `<vcpkg-root>`는 vcpkg가 설치된 경로로 교체
+    - Replace `<vcpkg-root>` with your vcpkg installation path
 
 #### Linux (gcc + apt/yum)
 
@@ -68,17 +70,16 @@
    sudo yum install libcurl-devel spdlog-devel nlohmann-json-devel 
    ```
 
+#### Installing ixwebsocket on Rocky Linux
 
-#### Rocky Linux에서 ixwebsocket 설치
+Some RHEL-based distributions like Rocky Linux do not provide the `ixwebsocket-devel` package.
+In this case, you need to build from source:
 
-Rocky Linux 등 일부 RHEL 계열 배포판에는 `ixwebsocket-devel` 패키지가 제공되지 않습니다.
-이 경우, 소스에서 직접 빌드해야 합니다:
-
-1. 의존성 설치
+1. Install dependencies
    ```sh
    sudo yum install libcurl-devel spdlog-devel nlohmann-json-devel
    ```
-2. IXWebSocket 소스 다운로드 및 빌드
+2. Download and build IXWebSocket from source
    ```sh
    git clone https://github.com/machinezone/IXWebSocket.git
    cd IXWebSocket
@@ -87,26 +88,25 @@ Rocky Linux 등 일부 RHEL 계열 배포판에는 `ixwebsocket-devel` 패키지
    make -j
    sudo make install
    ```
-   - 또는 특정한 릴리즈 버전을 다운로드 받아서 설치하여도 된다. https://github.com/machinezone/IXWebSocket/releases 
-3. CMake 빌드 시 IXWebSocket이 설치된 경로가 자동으로 탐지되지 않으면, `CMAKE_PREFIX_PATH`에 설치 경로를 추가:
+   - Or download and install a specific release version: https://github.com/machinezone/IXWebSocket/releases 
+3. If CMake does not automatically detect the IXWebSocket installation path, add the install path to `CMAKE_PREFIX_PATH`:
    ```sh
    cmake -B build -DCMAKE_PREFIX_PATH="/usr/local"
-   # 또는
+   # or
    cmake -DCMAKE_INSTALL_PREFIX=/your/custom/path ..
    ```
 
-#### 참고
-- CMake에서 각 라이브러리는 `find_package`로 자동 탐지됩니다.
-- vcpkg/패키지 매니저를 사용하면 별도 소스 빌드 없이 간편하게 설치할 수 있습니다.
+#### Notes
+- Each library is automatically detected with `find_package` in CMake.
+- Using vcpkg or a package manager allows for easy installation without building from source.
 
-### `Node.js` 서버 (`sio2`, `sio3`)
+### `Node.js` Server (`sio2`, `sio3`)
 
-- (1) 각 폴더(`sio2`, `sio3`)에서 의존성 설치
+- (1) Install dependencies in each folder (`sio2`, `sio3`)
    ```sh
      npm install
    ```
-- (2) 서버 실행
+- (2) Run the server
    ```sh
-     node server2.js  # 또는 node server3.js
+     node server2.js  # or node server3.js
    ```
-
